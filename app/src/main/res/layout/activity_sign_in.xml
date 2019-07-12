@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:hint="Phone number"
             android:inputType="phone"
+            android:text="08130308873"
             android:textColor="#fff"
             android:textColorHint="#fff"
             android:textSize="34sp"
@@ -38,6 +39,7 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:inputType="textPassword"
+            android:text="aaaaaa"
             android:textColor="#fff"
             android:textColorHint="#fff"
             android:textSize="34sp"
@@ -61,7 +63,7 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:buttonTint="#fff"
-            android:text="@string/remember_me"
+            android:text="Remember me"
             android:textColor="#fff" />
 
         <TextView
@@ -83,12 +85,10 @@
     <Button
         android:id="@+id/btnSignIn"
         android:layout_alignParentBottom="true"
-        android:text="@string/sign_in"
+        android:text="Sign in"
         android:textColor="#fff"
         android:textSize="15sp"
         android:background="@color/colorPrimary"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

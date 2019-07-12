@@ -3,6 +3,8 @@ package com.example.ayomide.atsnote;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,15 +15,35 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.ayomide.atsnote.Interface.ItemClickListener;
+import com.example.ayomide.atsnote.Model.Category;
+import com.example.ayomide.atsnote.ViewHolder.ClassViewHolder;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    //Firebase
+    FirebaseDatabase db;
+    DatabaseReference category;
+    FirebaseRecyclerAdapter<Category, ClassViewHolder> adapter;
+
+    //View
+    RecyclerView recycler_grade;
+    RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
         Toolbar toolbar = (Toolbar) findViewById( R.id.toolbar );
+        toolbar.setTitle("Class Management");
         setSupportActionBar( toolbar );
+
+        db = FirebaseDatabase.getInstance();
+        category = db.getReference("Category");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById( R.id.fab );
         fab.setOnClickListener( new View.OnClickListener() {
@@ -40,6 +62,34 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById( R.id.nav_view );
         navigationView.setNavigationItemSelectedListener( this );
+
+        //Load menu
+        recycler_grade = (RecyclerView) findViewById(R.id.recycler_grades);
+        recycler_grade.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recycler_grade.setLayoutManager(layoutManager);
+
+        loadClasses();
+    }
+
+    private void loadClasses()
+    {
+        adapter = new FirebaseRecyclerAdapter<Category, ClassViewHolder>(
+                Category.class, R.layout.grade_layout, ClassViewHolder.class, category) {
+            @Override
+            protected void populateViewHolder(ClassViewHolder viewHolder, Category model, int position) {
+                viewHolder.tvClassName.setText( model.getName() );
+
+                viewHolder.setItemClickListener( new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        //...
+                    }
+                } );
+            }
+        };
+        adapter.notifyDataSetChanged();
+        recycler_grade.setAdapter( adapter );
     }
 
     @Override

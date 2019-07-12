@@ -6,14 +6,13 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
-    tools:showIn="@layout/app_bar_main">
-
+    >
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_grades"
+        android:id="@+id/recycler_pupils"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        tools:listitem="@layout/grade_layout" />
+        android:scrollbars="vertical"
+        tools:listitem="@layout/pupil_layout" />
 
 </RelativeLayout>
