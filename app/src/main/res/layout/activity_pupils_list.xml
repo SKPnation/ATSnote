@@ -15,4 +15,19 @@
         android:scrollbars="vertical"
         tools:listitem="@layout/pupil_layout" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/colorPrimary"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_person_add_black_24dp"
+        android:tint="#fff"/>
+
+
 </RelativeLayout>

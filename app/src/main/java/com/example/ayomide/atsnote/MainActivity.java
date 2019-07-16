@@ -1,5 +1,6 @@
 package com.example.ayomide.atsnote;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar( toolbar );
 
         db = FirebaseDatabase.getInstance();
-        category = db.getReference("Category");
+        category = db.getReference("Class");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById( R.id.fab );
         fab.setOnClickListener( new View.OnClickListener() {
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById( R.id.nav_view );
         navigationView.setNavigationItemSelectedListener( this );
 
-        //Load menu
+        //Load classes
         recycler_grade = (RecyclerView) findViewById(R.id.recycler_grades);
         recycler_grade.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -83,7 +84,11 @@ public class MainActivity extends AppCompatActivity
                 viewHolder.setItemClickListener( new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-                        //...
+                        //send classId to new Activity and start new Activity
+                        Intent pupilList = new Intent( MainActivity.this, PupilsList.class );
+                        //Because classId is key so we just get key of this items
+                        pupilList.putExtra( "ClassId", adapter.getRef( position ).getKey() );
+                        startActivity( pupilList );
                     }
                 } );
             }
