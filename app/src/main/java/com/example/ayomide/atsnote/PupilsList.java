@@ -119,7 +119,7 @@ public class PupilsList extends AppCompatActivity {
                 viewHolder.btnReport.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //...
+                        showPdfDialog();
                     }
                 } );
 
@@ -169,6 +169,10 @@ public class PupilsList extends AppCompatActivity {
         };
         adapter.notifyDataSetChanged();
         recycler_pupils.setAdapter( adapter );
+    }
+
+    private void showPdfDialog()
+    {
     }
 
     private void showEditDialog(final String key, final Pupil item)
@@ -378,7 +382,7 @@ public class PupilsList extends AppCompatActivity {
             mDialog.show();
 
             String imageName = UUID.randomUUID().toString();
-            final StorageReference imageFolder = storageReference.child("images/"+imageName);
+            final StorageReference imageFolder = storageReference.child("profileImages/"+imageName);
             imageFolder.putFile(saveUri)
                     .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override

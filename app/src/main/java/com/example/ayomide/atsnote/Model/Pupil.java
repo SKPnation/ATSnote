@@ -1,12 +1,12 @@
 package com.example.ayomide.atsnote.Model;
 
 public class Pupil {
-    private String name, image, age, grade, address, phone, gName, gEmail, gOfficeAddress, categoryId, entryCode;
+    private String name, image, age, grade, address, phone, gName, gEmail, gOfficeAddress, categoryId, entryCode, reportPdf;
 
     public Pupil() {
     }
 
-    public Pupil(String name, String image, String age, String grade, String address, String phone, String gName, String gEmail, String gOfficeAddress, String categoryId, String entryCode) {
+    public Pupil(String name, String image, String age, String grade, String address, String phone, String gName, String gEmail, String gOfficeAddress, String categoryId, String entryCode, String reportPdf) {
         this.name = name;
         this.image = image;
         this.age = age;
@@ -18,6 +18,7 @@ public class Pupil {
         this.gOfficeAddress = gOfficeAddress;
         this.categoryId = categoryId;
         this.entryCode = entryCode;
+        this.reportPdf = reportPdf;
     }
 
     public String getName() {
@@ -106,5 +107,13 @@ public class Pupil {
 
     public void setEntryCode(String entryCode) {
         this.entryCode = entryCode;
+    }
+
+    public String getReportPdf() {
+        return reportPdf;
+    }
+
+    public void setReportPdf(String reportPdf) {
+        this.reportPdf = reportPdf;
     }
 }
