@@ -33,7 +33,7 @@ public class ReportCard extends AppCompatActivity {
         if(getIntent() != null)
             pupilId = getIntent().getStringExtra("PupilId");
         if(!pupilId.isEmpty())
-            loadPdf(pupilId);
+            loadPdf(pupilId) ;
     }
 
     private void loadPdf(String pupilId)
