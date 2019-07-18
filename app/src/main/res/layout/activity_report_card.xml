@@ -7,10 +7,23 @@
     android:layout_height="match_parent"
     tools:context=".ReportCard">
 
-    <com.github.barteksc.pdfviewer.PDFView
-        android:id="@+id/pdfview"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/upload_click"
+            android:layout_above="@id/pdfview"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="Upload"/>
+
+        <com.github.barteksc.pdfviewer.PDFView
+            android:id="@+id/pdfview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
 </RelativeLayout>

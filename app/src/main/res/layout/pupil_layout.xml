@@ -41,8 +41,8 @@
                     android:text="James Soyinka"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
-
+                    android:textStyle="bold"
+                    />
                 <TextView
                     android:id="@+id/pupil_age"
                     android:layout_width="wrap_content"
@@ -53,8 +53,17 @@
                     android:layout_toRightOf="@id/imageView"
                     android:layout_below="@+id/nameText"
                     android:layout_marginLeft="30dp"
-            />
-
+                    />
+                <TextView
+                    android:id="@+id/report_file"
+                    android:layout_below="@+id/pupil_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@id/imageView"
+                    android:text="Report has not been uploaded"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>

@@ -1,12 +1,16 @@
 package com.example.ayomide.atsnote;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ayomide.atsnote.Common.Common;
@@ -25,8 +30,10 @@ import com.example.ayomide.atsnote.Model.User;
 import com.example.ayomide.atsnote.ViewHolder.ClassViewHolder;
 import com.example.ayomide.atsnote.ViewHolder.PupilViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,11 +67,12 @@ public class PupilsList extends AppCompatActivity {
 
     //Add new pupil layout
     EditText etName, etAge, etGrade, etEntryCode, etHomeAddress, etPhone, etGname, etGemail, etOfficeAddress;
-    Button btnSelect, btnUpload;
+    Button btnSelect, btnUpload, btnPdfSelect, btnPdfUpload;
+    TextView tvReportFile;
 
     Pupil newPupil;
 
-    Uri saveUri;
+    Uri saveUri, pdfUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +115,7 @@ public class PupilsList extends AppCompatActivity {
             protected void populateViewHolder(PupilViewHolder viewHolder, final Pupil model, final int position) {
                 viewHolder.pupil_name.setText( model.getName() );
                 viewHolder.pupil_age.setText( model.getAge() );
+                viewHolder.tvReportFile.setText( model.getReportPdf() );
                 Picasso.with(getBaseContext()).load( model.getImage()).into( viewHolder.pupil_image );
 
                 viewHolder.btnEdit.setOnClickListener( new View.OnClickListener() {
@@ -119,7 +128,7 @@ public class PupilsList extends AppCompatActivity {
                 viewHolder.btnReport.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showPdfDialog();
+                        showPdfDialog(adapter.getRef( position ).getKey(), adapter.getItem( position ));
                     }
                 } );
 
@@ -171,8 +180,131 @@ public class PupilsList extends AppCompatActivity {
         recycler_pupils.setAdapter( adapter );
     }
 
-    private void showPdfDialog()
+    private void showPdfDialog(final String key, final Pupil item)
     {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PupilsList.this);
+        alertDialog.setTitle("Upload Report Card");
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View upload_report_layout  = inflater.inflate( R.layout.pdf_upload_layout, null );
+
+        tvReportFile = upload_report_layout.findViewById( R.id.report_file );
+        btnPdfSelect = upload_report_layout.findViewById(R.id.btnPdfSelect);
+        btnPdfUpload = upload_report_layout.findViewById(R.id.btnPdfUpload);
+
+        tvReportFile.setText( item.getReportPdf() );
+
+        btnPdfSelect.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission( PupilsList.this, Manifest.permission.READ_EXTERNAL_STORAGE )== PackageManager.PERMISSION_DENIED)
+                {
+                    selectPdf();
+                }
+                else
+                    ActivityCompat.requestPermissions( PupilsList.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+            }
+        } );
+
+        btnPdfUpload.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uploadFile(key, item);
+            }
+        } );
+
+        alertDialog.setView( upload_report_layout );
+        alertDialog.setIcon( R.drawable.ic_file_upload_black_24dp );
+
+        alertDialog.setPositiveButton( "DONE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        } );
+
+        alertDialog.setNegativeButton( "CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        } );
+
+        alertDialog.show();
+    }
+
+    private void uploadFile(final String key, final Pupil item)
+    {
+        if (pdfUri != null)
+        {
+            final ProgressDialog progressDialog = new ProgressDialog( PupilsList.this );
+            progressDialog.setProgressStyle( ProgressDialog.STYLE_HORIZONTAL );
+            progressDialog.setTitle( "Uploading file..." );
+            progressDialog.setProgress( 0 );
+            progressDialog.show();
+
+            final String fileName = UUID.randomUUID().toString();
+            final StorageReference storageReference = storage.getReference(); //returns root path
+
+            storageReference.child( "pdfFiles" ).child( fileName ).putFile( pdfUri )
+                    .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            final String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();//return the url of the uploaded file
+                            // store the url in realtime database..
+                            DatabaseReference reference = pupilsList; //return path to root
+                            reference.child( fileName ).setValue( url ).addOnCompleteListener( new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful())
+                                    {
+                                        progressDialog.dismiss();
+                                        Toast.makeText( PupilsList.this, "File successfully uploaded", Toast.LENGTH_SHORT ).show();
+                                        item.setReportPdf( url );
+
+                                        pupilsList.child( key ).setValue( item );
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText( PupilsList.this, "File not successfully uploaded", Toast.LENGTH_SHORT ).show();
+                                    }
+                                }
+                            } );
+                        }
+                    } ).addOnFailureListener( new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText( PupilsList.this, "File not successfully uploaded", Toast.LENGTH_SHORT ).show();
+                }
+            } ).addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    progressDialog.setProgress( currentProgress );
+                }
+            } );
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 9 && grantResults[0]==PackageManager.PERMISSION_GRANTED)
+        {
+            selectPdf();
+        }
+        else
+            Toast.makeText( PupilsList.this, "Please provide permission..", Toast.LENGTH_SHORT ).show();
+    }
+
+    private void selectPdf()
+    {
+        //to allow user to select a file using file manager, we will use intent
+
+        Intent intent = new Intent();
+        intent.setType( "application/pdf" );
+        intent.setAction( Intent.ACTION_GET_CONTENT );
+        startActivityForResult( intent, Common.PDF_REQUEST );
     }
 
     private void showEditDialog(final String key, final Pupil item)
@@ -414,6 +546,7 @@ public class PupilsList extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult( requestCode, resultCode, data );
@@ -423,6 +556,14 @@ public class PupilsList extends AppCompatActivity {
         {
             saveUri = data.getData();
             btnSelect.setText( "Image Selected" );
+        }
+
+        if (requestCode == Common.PDF_REQUEST && resultCode==RESULT_OK && data != null) {
+            pdfUri = data.getData(); //return the uri of the selected file
+            tvReportFile.setText( "the report file link : " + data.getData().getLastPathSegment() );
+        }
+        else{
+            Toast.makeText( PupilsList.this, "Please select a file", Toast.LENGTH_SHORT ).show();
         }
     }
 }
