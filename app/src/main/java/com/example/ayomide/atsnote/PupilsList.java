@@ -243,19 +243,18 @@ public class PupilsList extends AppCompatActivity {
             progressDialog.setProgress( 0 );
             progressDialog.show();
 
-            final String fileName = UUID.randomUUID().toString();
-            final StorageReference storageReference = storage.getReference(); //returns root path
-
-            storageReference.child( "pdfFiles" ).child( fileName ).putFile( pdfUri )
+            String fileName = UUID.randomUUID().toString();
+            final StorageReference reportFolder = storageReference.child( "reportFiles/"+fileName );
+            reportFolder.putFile( pdfUri )
                     .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             final String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();//return the url of the uploaded file
-                            // store the url in realtime database..
-                            DatabaseReference reference = pupilsList; //return path to root
-                            reference.child( fileName ).setValue( url ).addOnCompleteListener( new OnCompleteListener<Void>() {
+                            progressDialog.dismiss();
+                            Toast.makeText(PupilsList.this, "Uploaded!!!", Toast.LENGTH_SHORT).show();
+                            reportFolder.putFile( pdfUri ).addOnCompleteListener( new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     if (task.isSuccessful())
                                     {
                                         progressDialog.dismiss();
@@ -264,25 +263,10 @@ public class PupilsList extends AppCompatActivity {
 
                                         pupilsList.child( key ).setValue( item );
                                     }
-                                    else
-                                    {
-                                        Toast.makeText( PupilsList.this, "File not successfully uploaded", Toast.LENGTH_SHORT ).show();
-                                    }
                                 }
                             } );
                         }
-                    } ).addOnFailureListener( new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText( PupilsList.this, "File not successfully uploaded", Toast.LENGTH_SHORT ).show();
-                }
-            } ).addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                    progressDialog.setProgress( currentProgress );
-                }
-            } );
+                    } );
         }
     }
 
