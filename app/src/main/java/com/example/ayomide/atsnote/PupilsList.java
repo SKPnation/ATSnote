@@ -80,7 +80,7 @@ public class PupilsList extends AppCompatActivity {
         setContentView( R.layout.activity_pupils_list );
 
         db = FirebaseDatabase.getInstance();
-        pupilsList = db.getReference("Pupil");
+        pupilsList = db.getReference( "Pupil" );
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
@@ -96,59 +96,57 @@ public class PupilsList extends AppCompatActivity {
             public void onClick(View view) {
                 showNewPupilDialog();
             }
-        });
+        } );
 
         if (getIntent() != null)
             classId = getIntent().getStringExtra( "ClassId" );
         if (!classId.isEmpty())
-            loadPupilsList(classId);
+            loadPupilsList( classId );
     }
 
-    private void loadPupilsList(String classId)
-    {
+    private void loadPupilsList(String classId) {
         adapter = new FirebaseRecyclerAdapter<Pupil, PupilViewHolder>(
                 Pupil.class,
                 R.layout.pupil_layout,
                 PupilViewHolder.class,
-                pupilsList.orderByChild( "categoryId" ).equalTo( classId )) {
+                pupilsList.orderByChild( "categoryId" ).equalTo( classId ) ) {
             @Override
             protected void populateViewHolder(PupilViewHolder viewHolder, final Pupil model, final int position) {
                 viewHolder.pupil_name.setText( model.getName() );
                 viewHolder.pupil_age.setText( model.getAge() );
                 viewHolder.tvReportFile.setText( model.getReportPdf() );
-                Picasso.with(getBaseContext()).load( model.getImage()).into( viewHolder.pupil_image );
+                Picasso.with( getBaseContext() ).load( model.getImage() ).into( viewHolder.pupil_image );
 
                 viewHolder.btnEdit.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showEditDialog(adapter.getRef( position ).getKey(), adapter.getItem( position ));
+                        showEditDialog( adapter.getRef( position ).getKey(), adapter.getItem( position ) );
                     }
                 } );
 
                 viewHolder.btnReport.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showPdfDialog(adapter.getRef( position ).getKey(), adapter.getItem( position ));
+                        showPdfDialog( adapter.getRef( position ).getKey(), adapter.getItem( position ) );
                     }
                 } );
 
                 viewHolder.btnRemove.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PupilsList.this);
-                        alertDialog.setTitle("Are you sure?");
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
+                        alertDialog.setTitle( "Are you sure?" );
 
                         alertDialog.setPositiveButton( "YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
-                                DatabaseReference pupils = FirebaseDatabase.getInstance().getReference("Pupil");
+                                DatabaseReference pupils = FirebaseDatabase.getInstance().getReference( "Pupil" );
                                 Query pupilInClass = pupils.orderByChild( "categoryId" ).equalTo( adapter.getRef( position ).getKey() );
                                 pupilInClass.addListenerForSingleValueEvent( new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
-                                        {
+                                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                                             postSnapshot.getRef().removeValue();
                                         }
                                     }
@@ -159,8 +157,8 @@ public class PupilsList extends AppCompatActivity {
                                     }
                                 } );
 
-                                pupilsList.child(adapter.getRef(position).getKey()).removeValue();
-                                Toast.makeText(PupilsList.this,"Deleted "+model.getName(), Toast.LENGTH_LONG ).show();
+                                pupilsList.child( adapter.getRef( position ).getKey() ).removeValue();
+                                Toast.makeText( PupilsList.this, "Deleted " + model.getName(), Toast.LENGTH_LONG ).show();
                             }
                         } );
 
@@ -180,36 +178,33 @@ public class PupilsList extends AppCompatActivity {
         recycler_pupils.setAdapter( adapter );
     }
 
-    private void showPdfDialog(final String key, final Pupil item)
-    {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PupilsList.this);
-        alertDialog.setTitle("Upload Report Card");
+    private void showPdfDialog(final String key, final Pupil item) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
+        alertDialog.setTitle( "Upload Report Card" );
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View upload_report_layout  = inflater.inflate( R.layout.pdf_upload_layout, null );
+        View upload_report_layout = inflater.inflate( R.layout.pdf_upload_layout, null );
 
         tvReportFile = upload_report_layout.findViewById( R.id.report_file );
-        btnPdfSelect = upload_report_layout.findViewById(R.id.btnPdfSelect);
-        btnPdfUpload = upload_report_layout.findViewById(R.id.btnPdfUpload);
+        btnPdfSelect = upload_report_layout.findViewById( R.id.btnPdfSelect );
+        btnPdfUpload = upload_report_layout.findViewById( R.id.btnPdfUpload );
 
         tvReportFile.setText( item.getReportPdf() );
 
         btnPdfSelect.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission( PupilsList.this, Manifest.permission.READ_EXTERNAL_STORAGE )== PackageManager.PERMISSION_DENIED)
-                {
+                if (ContextCompat.checkSelfPermission( PupilsList.this, Manifest.permission.READ_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_DENIED) {
                     selectPdf();
-                }
-                else
-                    ActivityCompat.requestPermissions( PupilsList.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+                } else
+                    ActivityCompat.requestPermissions( PupilsList.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9 );
             }
         } );
 
         btnPdfUpload.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uploadFile(key, item);
+                uploadFile( key, item );
             }
         } );
 
@@ -233,28 +228,27 @@ public class PupilsList extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void uploadFile(final String key, final Pupil item)
-    {
-        if (pdfUri != null)
-        {
+    private void uploadFile(final String key, final Pupil item) {
+        if (pdfUri != null) {
             final ProgressDialog progressDialog = new ProgressDialog( PupilsList.this );
             progressDialog.setProgressStyle( ProgressDialog.STYLE_HORIZONTAL );
             progressDialog.setTitle( "Uploading file..." );
             progressDialog.setProgress( 0 );
             progressDialog.show();
 
-            String fileName = UUID.randomUUID().toString();
-            final StorageReference reportFolder = storageReference.child( "reportFiles/"+fileName );
-            reportFolder.putFile( pdfUri )
-                    .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            final String fileName = UUID.randomUUID().toString();
+            final StorageReference reportFolder = storageReference.child( "reportFiles/" + fileName );
+            reportFolder.putFile( pdfUri ).addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener( new OnSuccessListener<Uri>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            final String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();//return the url of the uploaded file
-                            progressDialog.dismiss();
-                            Toast.makeText(PupilsList.this, "Uploaded!!!", Toast.LENGTH_SHORT).show();
-                            reportFolder.putFile( pdfUri ).addOnCompleteListener( new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        public void onSuccess(final Uri uri) {
+                            final String url = uri.toString();
+                            DatabaseReference reference = pupilsList;
+                            reference.child( fileName ).setValue( url ).addOnCompleteListener( new OnCompleteListener<Void>() {
                                 @Override
-                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful())
                                     {
                                         progressDialog.dismiss();
@@ -263,26 +257,39 @@ public class PupilsList extends AppCompatActivity {
 
                                         pupilsList.child( key ).setValue( item );
                                     }
+                                    else
+                                        Toast.makeText( PupilsList.this, "File not successfully uploaded", Toast.LENGTH_SHORT ).show();
                                 }
                             } );
                         }
                     } );
+                }
+            } ).addOnFailureListener( new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+                    Toast.makeText( PupilsList.this, "File not successfully uploaded", Toast.LENGTH_SHORT ).show();
+                }
+            } ).addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    progressDialog.setProgress( currentProgress );
+                }
+            } );
         }
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 9 && grantResults[0]==PackageManager.PERMISSION_GRANTED)
-        {
+        if (requestCode == 9 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             selectPdf();
-        }
-        else
+        } else
             Toast.makeText( PupilsList.this, "Please provide permission..", Toast.LENGTH_SHORT ).show();
     }
 
-    private void selectPdf()
-    {
+    private void selectPdf() {
         //to allow user to select a file using file manager, we will use intent
 
         Intent intent = new Intent();
@@ -291,10 +298,9 @@ public class PupilsList extends AppCompatActivity {
         startActivityForResult( intent, Common.PDF_REQUEST );
     }
 
-    private void showEditDialog(final String key, final Pupil item)
-    {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PupilsList.this);
-        alertDialog.setTitle("Edit Pupil's Info");
+    private void showEditDialog(final String key, final Pupil item) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
+        alertDialog.setTitle( "Edit Pupil's Info" );
 
         LayoutInflater inflater = this.getLayoutInflater();
         View edit_pupil_layout = inflater.inflate( R.layout.add_new_pupil_layout, null );
@@ -308,8 +314,8 @@ public class PupilsList extends AppCompatActivity {
         etGname = edit_pupil_layout.findViewById( R.id.etGuardianName );
         etGemail = edit_pupil_layout.findViewById( R.id.etGuardianEmail );
         etOfficeAddress = edit_pupil_layout.findViewById( R.id.etOfficeAddress );
-        btnSelect = edit_pupil_layout.findViewById(R.id.btnSelect);
-        btnUpload = edit_pupil_layout.findViewById(R.id.btnUpload);
+        btnSelect = edit_pupil_layout.findViewById( R.id.btnSelect );
+        btnUpload = edit_pupil_layout.findViewById( R.id.btnUpload );
 
         etName.setText( item.getName() );
         etAge.setText( item.getAge() );
@@ -321,19 +327,19 @@ public class PupilsList extends AppCompatActivity {
         etGemail.setText( item.getgEmail() );
         etOfficeAddress.setText( item.getgOfficeAddress() );
 
-        btnSelect.setOnClickListener(new View.OnClickListener() {
+        btnSelect.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooseImage();
             }
-        });
+        } );
 
-        btnUpload.setOnClickListener(new View.OnClickListener() {
+        btnUpload.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeImage(item);
+                changeImage( item );
             }
-        });
+        } );
 
         alertDialog.setView( edit_pupil_layout );
         alertDialog.setIcon( R.drawable.ic_person_black_24dp );
@@ -367,15 +373,14 @@ public class PupilsList extends AppCompatActivity {
     }
 
 
-    private void showNewPupilDialog()
-    {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PupilsList.this);
-        alertDialog.setTitle("Add New Pupil");
-        alertDialog.setMessage("Put in full information");
-        alertDialog.setIcon(R.drawable.ic_person_add_black_24dp);
+    private void showNewPupilDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
+        alertDialog.setTitle( "Add New Pupil" );
+        alertDialog.setMessage( "Put in full information" );
+        alertDialog.setIcon( R.drawable.ic_person_add_black_24dp );
 
         LayoutInflater layoutInflater = this.getLayoutInflater();
-        View view = layoutInflater.inflate(R.layout.add_new_pupil_layout, null);
+        View view = layoutInflater.inflate( R.layout.add_new_pupil_layout, null );
 
         etName = view.findViewById( R.id.etName );
         etAge = view.findViewById( R.id.etAge );
@@ -387,22 +392,22 @@ public class PupilsList extends AppCompatActivity {
         etGemail = view.findViewById( R.id.etGuardianEmail );
         etOfficeAddress = view.findViewById( R.id.etOfficeAddress );
 
-        btnSelect = view.findViewById(R.id.btnSelect);
-        btnUpload = view.findViewById(R.id.btnUpload);
+        btnSelect = view.findViewById( R.id.btnSelect );
+        btnUpload = view.findViewById( R.id.btnUpload );
 
-        btnSelect.setOnClickListener(new View.OnClickListener() {
+        btnSelect.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooseImage();
             }
-        });
+        } );
 
-        btnUpload.setOnClickListener(new View.OnClickListener() {
+        btnUpload.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 uploadImage();
             }
-        });
+        } );
 
         alertDialog.setView( view );
 
@@ -410,10 +415,9 @@ public class PupilsList extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //Here create new category
-                if(newPupil != null)
-                {
-                    pupilsList.push().setValue(newPupil);
-                    Toast.makeText( PupilsList.this, "New pupil "+newPupil.getName()+" was added", Toast.LENGTH_SHORT )
+                if (newPupil != null) {
+                    pupilsList.push().setValue( newPupil );
+                    Toast.makeText( PupilsList.this, "New pupil " + newPupil.getName() + " was added", Toast.LENGTH_SHORT )
                             .show();
                 }
             }
@@ -429,30 +433,27 @@ public class PupilsList extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void chooseImage()
-    {
+    private void chooseImage() {
         Intent intent = new Intent();
         intent.setType( "image/*" );
         intent.setAction( Intent.ACTION_GET_CONTENT );
-        startActivityForResult(Intent.createChooser( intent, "Select A Profile Picture" ), Common.IMAGE_REQUEST);
+        startActivityForResult( Intent.createChooser( intent, "Select A Profile Picture" ), Common.IMAGE_REQUEST );
     }
 
-    private void uploadImage()
-    {
-        if (saveUri != null)
-        {
-            final ProgressDialog mDialog = new ProgressDialog(this);
-            mDialog.setMessage("Uploading...");
+    private void uploadImage() {
+        if (saveUri != null) {
+            final ProgressDialog mDialog = new ProgressDialog( this );
+            mDialog.setMessage( "Uploading..." );
             mDialog.show();
 
             String imageName = UUID.randomUUID().toString();
-            final StorageReference imageFolder = storageReference.child( "profileImages/"+imageName );
+            final StorageReference imageFolder = storageReference.child( "profileImages/" + imageName );
             imageFolder.putFile( saveUri )
                     .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(PupilsList.this, "Uploaded!!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText( PupilsList.this, "Uploaded!!!", Toast.LENGTH_SHORT ).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener( new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
@@ -476,57 +477,55 @@ public class PupilsList extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             mDialog.dismiss();
-                            Toast.makeText( PupilsList.this, ""+e.getMessage(), Toast.LENGTH_SHORT ).show();
+                            Toast.makeText( PupilsList.this, "" + e.getMessage(), Toast.LENGTH_SHORT ).show();
                         }
                     } )
                     .addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            mDialog.setMessage( "Uploaded "+progress+"%" );
+                            mDialog.setMessage( "Uploaded " + progress + "%" );
                         }
                     } );
         }
     }
 
-    private void changeImage(final Pupil item)
-    {
-        if(saveUri != null)
-        {
-            final ProgressDialog mDialog = new ProgressDialog(this);
-            mDialog.setMessage("Uploading...");
+    private void changeImage(final Pupil item) {
+        if (saveUri != null) {
+            final ProgressDialog mDialog = new ProgressDialog( this );
+            mDialog.setMessage( "Uploading..." );
             mDialog.show();
 
             String imageName = UUID.randomUUID().toString();
-            final StorageReference imageFolder = storageReference.child("profileImages/"+imageName);
-            imageFolder.putFile(saveUri)
+            final StorageReference imageFolder = storageReference.child( "profileImages/" + imageName );
+            imageFolder.putFile( saveUri )
                     .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(PupilsList.this, "Uploaded!!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText( PupilsList.this, "Uploaded!!!", Toast.LENGTH_SHORT ).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener( new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    item.setImage(uri.toString());
+                                    item.setImage( uri.toString() );
                                 }
-                            });
+                            } );
                         }
-                    })
+                    } )
                     .addOnFailureListener( new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             mDialog.dismiss();
-                            Toast.makeText( PupilsList.this, ""+e.getMessage(), Toast.LENGTH_LONG ).show();
+                            Toast.makeText( PupilsList.this, "" + e.getMessage(), Toast.LENGTH_LONG ).show();
                         }
-                    })
+                    } )
                     .addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            mDialog.setMessage( "Uploaded "+progress+"%" );
+                            mDialog.setMessage( "Uploaded " + progress + "%" );
                         }
-                    });
+                    } );
         }
     }
 
@@ -536,17 +535,15 @@ public class PupilsList extends AppCompatActivity {
         super.onActivityResult( requestCode, resultCode, data );
 
         if (requestCode == Common.IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null)
-        {
+                && data != null && data.getData() != null) {
             saveUri = data.getData();
             btnSelect.setText( "Image Selected" );
         }
 
-        if (requestCode == Common.PDF_REQUEST && resultCode==RESULT_OK && data != null) {
+        if (requestCode == Common.PDF_REQUEST && resultCode == RESULT_OK && data != null) {
             pdfUri = data.getData(); //return the uri of the selected file
             tvReportFile.setText( "the report file link : " + data.getData().getLastPathSegment() );
-        }
-        else{
+        } else {
             Toast.makeText( PupilsList.this, "Please select a file", Toast.LENGTH_SHORT ).show();
         }
     }
