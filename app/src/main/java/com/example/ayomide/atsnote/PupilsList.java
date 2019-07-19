@@ -228,6 +228,15 @@ public class PupilsList extends AppCompatActivity {
         alertDialog.show();
     }
 
+    private void selectPdf() {
+        //to allow user to select a file using file manager, we will use intent
+
+        Intent intent = new Intent();
+        intent.setType( "application/pdf" );
+        intent.setAction( Intent.ACTION_GET_CONTENT );
+        startActivityForResult( intent, Common.PDF_REQUEST );
+    }
+
     private void uploadFile(final String key, final Pupil item) {
         if (pdfUri != null) {
             final ProgressDialog progressDialog = new ProgressDialog( PupilsList.this );
@@ -289,14 +298,6 @@ public class PupilsList extends AppCompatActivity {
             Toast.makeText( PupilsList.this, "Please provide permission..", Toast.LENGTH_SHORT ).show();
     }
 
-    private void selectPdf() {
-        //to allow user to select a file using file manager, we will use intent
-
-        Intent intent = new Intent();
-        intent.setType( "application/pdf" );
-        intent.setAction( Intent.ACTION_GET_CONTENT );
-        startActivityForResult( intent, Common.PDF_REQUEST );
-    }
 
     private void showEditDialog(final String key, final Pupil item) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
@@ -371,7 +372,6 @@ public class PupilsList extends AppCompatActivity {
 
         alertDialog.show();
     }
-
 
     private void showNewPupilDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
