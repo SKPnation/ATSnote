@@ -5,6 +5,7 @@ import com.example.ayomide.atsnote.Model.User;
 
 public class Common {
     public static User currentUser;
+    public static Pupil currentPupil;
 
     public static final int IMAGE_REQUEST = 71;
 

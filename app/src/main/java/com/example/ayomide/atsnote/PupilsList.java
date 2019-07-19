@@ -245,8 +245,7 @@ public class PupilsList extends AppCompatActivity {
             progressDialog.setProgress( 0 );
             progressDialog.show();
 
-            final String fileName = UUID.randomUUID().toString();
-            final StorageReference reportFolder = storageReference.child( "reportFiles/" + fileName );
+            final StorageReference reportFolder = storageReference.child( "reportFiles" );
             reportFolder.putFile( pdfUri ).addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -255,7 +254,7 @@ public class PupilsList extends AppCompatActivity {
                         public void onSuccess(final Uri uri) {
                             final String url = uri.toString();
                             DatabaseReference reference = pupilsList;
-                            reference.child( fileName ).setValue( url ).addOnCompleteListener( new OnCompleteListener<Void>() {
+                            reference.child( key ).setValue( url ).addOnCompleteListener( new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful())
