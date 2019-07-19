@@ -218,13 +218,6 @@ public class PupilsList extends AppCompatActivity {
             }
         } );
 
-        alertDialog.setNegativeButton( "CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        } );
-
         alertDialog.show();
     }
 
@@ -245,7 +238,8 @@ public class PupilsList extends AppCompatActivity {
             progressDialog.setProgress( 0 );
             progressDialog.show();
 
-            final StorageReference reportFolder = storageReference.child( "reportFiles" );
+            final String fileName = key;
+            final StorageReference reportFolder = storageReference.child( "reportFiles/"+fileName );
             reportFolder.putFile( pdfUri ).addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -254,7 +248,7 @@ public class PupilsList extends AppCompatActivity {
                         public void onSuccess(final Uri uri) {
                             final String url = uri.toString();
                             DatabaseReference reference = pupilsList;
-                            reference.child( key ).setValue( url ).addOnCompleteListener( new OnCompleteListener<Void>() {
+                            reference.child( fileName ).setValue( url ).addOnCompleteListener( new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful())
