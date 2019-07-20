@@ -63,7 +63,7 @@
                     android:layout_toRightOf="@id/imageView"
                     android:text="Report has not been uploaded"
                     android:textColor="@android:color/black"
-                    android:textSize="12sp" />
+                    android:textSize="9sp" />
             </LinearLayout>
 
         </LinearLayout>

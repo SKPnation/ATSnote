@@ -1,5 +1,6 @@
 package com.example.ayomide.atsnote;
 
+import android.net.http.SslError;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
@@ -33,7 +35,7 @@ public class ReportCard extends AppCompatActivity{
     Pupil currentPupil;
 
     TextView report_url;
-    WebView webView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +46,6 @@ public class ReportCard extends AppCompatActivity{
         pupils = db.getReference("Pupil");
 
         report_url = findViewById( R.id.repor_url );
-        webView = findViewById( R.id.web_view );
-
-        webView.getSettings().setJavaScriptEnabled( true );
-        webView.setWebViewClient( new WebViewClient() );
 
         //Get Food Id from Intent
         if(getIntent() != null)
@@ -66,10 +64,6 @@ public class ReportCard extends AppCompatActivity{
                 currentPupil = dataSnapshot.getValue(Pupil.class);
 
                 report_url.setText( currentPupil.getReportPdf() );
-
-                String pdf = currentPupil.getReportPdf();
-                webView.setWebViewClient( new WebViewClient() );
-                webView.loadUrl( "http://drive.google.com/viewerng/viewer?embedded=true&url=" +pdf );
 
             }
 
