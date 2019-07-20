@@ -1,7 +1,10 @@
 package com.example.ayomide.atsnote;
 
 import android.Manifest;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,6 +43,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -47,6 +51,8 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.UUID;
+
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class PupilsList extends AppCompatActivity {
 
@@ -116,6 +122,15 @@ public class PupilsList extends AppCompatActivity {
                 viewHolder.pupil_age.setText( model.getAge() );
                 viewHolder.tvReportFile.setText( model.getReportPdf() );
                 Picasso.with( getBaseContext() ).load( model.getImage() ).into( viewHolder.pupil_image );
+
+                viewHolder.tvReportFile.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent pupilReport = new Intent(PupilsList.this, ReportCard.class);
+                        pupilReport.putExtra("pupilId", adapter.getRef(position).getKey()); //Send pupil Id to new activity
+                        startActivity(pupilReport);
+                    }
+                } );
 
                 viewHolder.btnEdit.setOnClickListener( new View.OnClickListener() {
                     @Override
@@ -231,6 +246,7 @@ public class PupilsList extends AppCompatActivity {
     }
 
     private void uploadFile(final String key, final Pupil item) {
+
         if (pdfUri != null) {
             final ProgressDialog progressDialog = new ProgressDialog( PupilsList.this );
             progressDialog.setProgressStyle( ProgressDialog.STYLE_HORIZONTAL );
