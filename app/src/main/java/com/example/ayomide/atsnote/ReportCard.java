@@ -1,6 +1,8 @@
 package com.example.ayomide.atsnote;
 
+import android.net.Uri;
 import android.net.http.SslError;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class ReportCard extends AppCompatActivity{
 
     FirebaseDatabase db;
@@ -35,7 +43,7 @@ public class ReportCard extends AppCompatActivity{
     Pupil currentPupil;
 
     TextView report_url;
-
+    PDFView pdfView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +54,9 @@ public class ReportCard extends AppCompatActivity{
         pupils = db.getReference("Pupil");
 
         report_url = findViewById( R.id.repor_url );
+        pdfView = findViewById( R.id.pdfView );
 
-        //Get Food Id from Intent
+        //Get pupil Id from Intent
         if(getIntent() != null)
             pupilId = getIntent().getStringExtra("pupilId");
         if(!pupilId.isEmpty())
@@ -65,6 +74,9 @@ public class ReportCard extends AppCompatActivity{
 
                 report_url.setText( currentPupil.getReportPdf() );
 
+                //This function reads pdf from URL
+                new RetrievePDFStream().execute( report_url.getText().toString() );
+
             }
 
             @Override
@@ -74,40 +86,30 @@ public class ReportCard extends AppCompatActivity{
         } );
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
-    /*
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu( menu, v, menuInfo );
-        getMenuInflater().inflate( R.menu.context_menu_sort, menu );
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
-            case R.id.upload_pdf:
-                Toast.makeText( ReportCard.this, "SELECTED", Toast.LENGTH_SHORT ).show();
-                return true;
-            case R.id.delete_pdf:
-                Toast.makeText( ReportCard.this, "SELECTED", Toast.LENGTH_SHORT ).show();
-                return true;
-                default:
-                    return super.onContextItemSelected( item );
+    class RetrievePDFStream extends AsyncTask<String,Void,InputStream>
+    {
+        @Override
+        protected InputStream doInBackground(String... strings) {
+            InputStream inputStream = null;
+            try{
+                URL url = new URL( strings[0] );
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                if (urlConnection.getResponseCode()==200)
+                {
+                    inputStream = new BufferedInputStream( urlConnection.getInputStream() );
+                }
+            }
+            catch (IOException e)
+            {
+                return null;
+            }
+            return inputStream;
         }
 
-    } */
-
-    /*if(getIntent() != null)
-            pupilId = getIntent().getStringExtra("PupilId");
-        if(!pupilId.isEmpty())
-            loadPdf(pupilId);*/
-
-
-
-    //registerForContextMenu( uploadClick );
+        @Override
+        protected void onPostExecute(InputStream inputStream) {
+            pdfView.fromStream( inputStream ).load();
+        }
+    }
 }

@@ -5,6 +5,5 @@
     <color name="colorAccent">#26A65B</color>
     <color name="colorHints">#727070</color>
 
-    <color name="overlayBackground">#7f333639</color>
     <color name="overlayActionBar">#ff000000</color>
-</resources>
+    <color name="overlayBackground">#7f333639</color></resources>
