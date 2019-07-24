@@ -106,8 +106,9 @@ public class PupilsList extends AppCompatActivity {
 
         if (getIntent() != null)
             classId = getIntent().getStringExtra( "ClassId" );
-        if (!classId.isEmpty())
+        if (!classId.isEmpty()) {
             loadPupilsList( classId );
+        }
     }
 
     private void loadPupilsList(String classId) {
@@ -127,6 +128,7 @@ public class PupilsList extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent pupilReport = new Intent(PupilsList.this, ReportCard.class);
+                        Toast.makeText( PupilsList.this, "Tap the link above if you want to share the child's report card", Toast.LENGTH_LONG ).show();
                         pupilReport.putExtra("pupilId", adapter.getRef(position).getKey()); //Send pupil Id to new activity
                         startActivity(pupilReport);
                     }
@@ -230,6 +232,8 @@ public class PupilsList extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
+
+                Toast.makeText( PupilsList.this, "Tap the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
             }
         } );
 
@@ -552,8 +556,6 @@ public class PupilsList extends AppCompatActivity {
         if (requestCode == Common.PDF_REQUEST && resultCode == RESULT_OK && data != null) {
             pdfUri = data.getData(); //return the uri of the selected file
             tvReportFile.setText( "the report file link : " + data.getData().getLastPathSegment() );
-        } else {
-            Toast.makeText( PupilsList.this, "Please select a file", Toast.LENGTH_SHORT ).show();
         }
     }
 }

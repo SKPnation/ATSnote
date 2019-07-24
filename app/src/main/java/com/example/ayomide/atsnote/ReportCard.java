@@ -1,5 +1,6 @@
 package com.example.ayomide.atsnote;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
@@ -54,6 +55,13 @@ public class ReportCard extends AppCompatActivity{
         pupils = db.getReference("Pupil");
 
         report_url = findViewById( R.id.repor_url );
+        report_url.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendEmail();
+            }
+        } );
+
         pdfView = findViewById( R.id.pdfView );
 
         //Get pupil Id from Intent
@@ -62,7 +70,22 @@ public class ReportCard extends AppCompatActivity{
         if(!pupilId.isEmpty())
         {
             getReport(pupilId);
+
         }
+    }
+
+
+
+    private void sendEmail()
+    {
+        String subject = currentPupil.getName()+"'s report card";
+        String text = currentPupil.getReportPdf();
+        Intent intent = new Intent();
+        intent.setType( "message/rfc2822" ); //message/rfc2822 is a mime type for email messages
+        intent.setAction(  Intent.ACTION_SEND  );
+        intent.putExtra( Intent.EXTRA_SUBJECT, subject );
+        intent.putExtra( Intent.EXTRA_TEXT, text );
+        startActivity(Intent.createChooser(intent, "Share using"));
     }
 
     private void getReport(String pupilId)
@@ -73,7 +96,7 @@ public class ReportCard extends AppCompatActivity{
                 currentPupil = dataSnapshot.getValue(Pupil.class);
 
                 report_url.setText( currentPupil.getReportPdf() );
-
+                Toast.makeText( ReportCard.this, "Tap the link above if you want to share the child's report card", Toast.LENGTH_LONG ).show();
                 //This function reads pdf from URL
                 new RetrievePDFStream().execute( report_url.getText().toString() );
 

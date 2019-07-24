@@ -12,8 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="10sp"
-            android:text="report url"
-            android:textIsSelectable="true"/>
+            android:text="report url" />
 
         <com.github.barteksc.pdfviewer.PDFView
             android:id="@+id/pdfView"

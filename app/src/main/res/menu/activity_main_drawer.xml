@@ -8,10 +8,6 @@
             android:id="@+id/nav_classes"
             android:icon="@drawable/ic_class_black_24dp"
             android:title="Classes" />
-        <item
-            android:id="@+id/nav_sign_out"
-            android:icon="@drawable/ic_exit_to_app_black_24dp"
-            android:title="Sign out" />
 
         <item
             android:id="@+id/nav_help"
