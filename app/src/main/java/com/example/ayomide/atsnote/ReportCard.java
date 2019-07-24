@@ -74,8 +74,6 @@ public class ReportCard extends AppCompatActivity{
         }
     }
 
-
-
     private void sendEmail()
     {
         String subject = currentPupil.getName()+"'s report card";
