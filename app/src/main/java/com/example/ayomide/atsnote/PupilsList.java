@@ -222,7 +222,8 @@ public class PupilsList extends AppCompatActivity {
     }
 
 
-    private void showPdfDialog(final String key, final Pupil item) {
+    private void showPdfDialog(final String key, final Pupil item)
+    {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
         alertDialog.setTitle( "Upload Report Card" );
 
