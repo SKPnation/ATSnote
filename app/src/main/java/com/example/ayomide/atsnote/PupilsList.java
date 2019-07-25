@@ -19,7 +19,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ayomide.atsnote.Common.Common;
+import com.example.ayomide.atsnote.Interface.ItemClickListener;
 import com.example.ayomide.atsnote.Model.Category;
 import com.example.ayomide.atsnote.Model.Pupil;
 import com.example.ayomide.atsnote.Model.User;
@@ -108,7 +112,6 @@ public class PupilsList extends AppCompatActivity {
             classId = getIntent().getStringExtra( "ClassId" );
         if (!classId.isEmpty()) {
             loadPupilsList( classId );
-            Toast.makeText( PupilsList.this, "Tap the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
         }
     }
 
@@ -125,13 +128,10 @@ public class PupilsList extends AppCompatActivity {
                 viewHolder.tvReportFile.setText( model.getReportPdf() );
                 Picasso.with( getBaseContext() ).load( model.getImage() ).into( viewHolder.pupil_image );
 
-                viewHolder.tvReportFile.setOnClickListener( new View.OnClickListener() {
+                viewHolder.setItemClickListener( new ItemClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        Intent pupilReport = new Intent(PupilsList.this, ReportCard.class);
-                        Toast.makeText( PupilsList.this, "Tap the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
-                        pupilReport.putExtra("pupilId", adapter.getRef(position).getKey()); //Send pupil Id to new activity
-                        startActivity(pupilReport);
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        Toast.makeText( PupilsList.this, "Press the link for more options", Toast.LENGTH_SHORT ).show();
                     }
                 } );
 
@@ -196,6 +196,32 @@ public class PupilsList extends AppCompatActivity {
         recycler_pupils.setAdapter( adapter );
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate( R.menu.context_menu_sort, menu );
+        return true;
+    }
+
+    @Override
+    public boolean onContextItemSelected(final MenuItem item) {
+
+        if(item.getTitle().equals(Common.VIEW))
+        {
+            Intent pupilReport = new Intent(PupilsList.this, ReportCard.class);
+            pupilReport.putExtra("pupilId", adapter.getRef(item.getOrder()).getKey()); //Send pupil Id to new activity
+            startActivity(pupilReport);
+        }
+        else if(item.getTitle().equals(Common.DELETE))
+        {
+            DatabaseReference pupilReport = FirebaseDatabase.getInstance().getReference("Pupil").child( adapter.getRef( item.getOrder() ).getKey() ).child( "reportPdf" );
+            pupilReport.removeValue();
+        }
+        return super.onContextItemSelected(item);
+    }
+
+
     private void showPdfDialog(final String key, final Pupil item) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
         alertDialog.setTitle( "Upload Report Card" );
@@ -233,8 +259,7 @@ public class PupilsList extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-
-                Toast.makeText( PupilsList.this, "Tap the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
+                Toast.makeText( PupilsList.this, "Press the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
             }
         } );
 

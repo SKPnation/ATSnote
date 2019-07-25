@@ -2,7 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/share_pdf"
-        android:title="Share"/>
+        android:id="@+id/view_report"
+        android:title="View"/>
+
+    <item
+        android:id="@+id/delete_report"
+        android:title="Delete"/>
 
 </menu>

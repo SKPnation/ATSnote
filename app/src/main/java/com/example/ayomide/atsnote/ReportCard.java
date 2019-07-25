@@ -70,7 +70,7 @@ public class ReportCard extends AppCompatActivity{
         if(!pupilId.isEmpty())
         {
             getReport(pupilId);
-
+            Toast.makeText( ReportCard.this, "Tap the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
         }
     }
 
