@@ -13,7 +13,7 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/atsnotify" />
+        android:src="@drawable/adorable_logo" />
 
     <ImageButton
         android:id="@+id/enter"

@@ -108,6 +108,7 @@ public class PupilsList extends AppCompatActivity {
             classId = getIntent().getStringExtra( "ClassId" );
         if (!classId.isEmpty()) {
             loadPupilsList( classId );
+            Toast.makeText( PupilsList.this, "Tap the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
         }
     }
 
@@ -128,7 +129,7 @@ public class PupilsList extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent pupilReport = new Intent(PupilsList.this, ReportCard.class);
-                        Toast.makeText( PupilsList.this, "Tap the link above if you want to share the child's report card", Toast.LENGTH_LONG ).show();
+                        Toast.makeText( PupilsList.this, "Tap the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
                         pupilReport.putExtra("pupilId", adapter.getRef(position).getKey()); //Send pupil Id to new activity
                         startActivity(pupilReport);
                     }
@@ -268,7 +269,7 @@ public class PupilsList extends AppCompatActivity {
                         public void onSuccess(final Uri uri) {
                             final String url = uri.toString();
                             DatabaseReference reference = pupilsList;
-                            reference.child( fileName ).setValue( url ).addOnCompleteListener( new OnCompleteListener<Void>() {
+                            reference.child( key ).child( fileName ).setValue( url ).addOnCompleteListener( new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful())
@@ -472,7 +473,7 @@ public class PupilsList extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     newPupil = new Pupil();
                                     newPupil.setName( etName.getText().toString() );
-                                    newPupil.setAge( etName.getText().toString() );
+                                    newPupil.setAge( etAge.getText().toString() );
                                     newPupil.setGrade( etGrade.getText().toString() );
                                     newPupil.setEntryCode( etEntryCode.getText().toString() );
                                     newPupil.setAddress( etHomeAddress.getText().toString() );

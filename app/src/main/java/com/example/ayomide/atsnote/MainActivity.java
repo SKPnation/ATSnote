@@ -226,9 +226,6 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_classes) {
             // Handle the class action
-        } else if (id == R.id.nav_help) {
-            Intent helpIntent = new Intent( MainActivity.this, Help.class );
-            startActivity( helpIntent );
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_layout );

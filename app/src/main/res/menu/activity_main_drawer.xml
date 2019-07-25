@@ -8,11 +8,6 @@
             android:id="@+id/nav_classes"
             android:icon="@drawable/ic_class_black_24dp"
             android:title="Classes" />
-
-        <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/ic_help_black_24dp"
-            android:title="Help" />
     </group>
 
 </menu>
