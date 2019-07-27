@@ -49,7 +49,7 @@ public class ParentManagement extends AppCompatActivity {
         fabAdd.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showCreateShipperDialog();
+                showCreateParentDialog();
             }
         } );
 
@@ -69,16 +69,93 @@ public class ParentManagement extends AppCompatActivity {
                 ParentViewHolder.class,
                 parents) {
             @Override
-            protected void populateViewHolder(ParentViewHolder viewHolder, Parent model, int position) {
+            protected void populateViewHolder(ParentViewHolder viewHolder, final Parent model, final int position) {
                 viewHolder.parent_name.setText( model.getName() );
                 viewHolder.parent_phone.setText( model.getPhone() );
+
+                viewHolder.btn_edit.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showEditDialog(adapter.getRef( position ).getKey(), adapter.getItem( position ));
+                    }
+                } );
+
+                viewHolder.btn_delete.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder( ParentManagement.this );
+                        alertDialog.setTitle( "Are you sure?" );
+
+                        alertDialog.setPositiveButton( "YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+
+                                parents.child(adapter.getRef( position ).getKey()).removeValue();
+                                Toast.makeText( ParentManagement.this, "Deleted "+model.getName(), Toast.LENGTH_SHORT ).show();
+                            }
+                        } );
+
+                        alertDialog.setNegativeButton( "NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        } );
+
+                        alertDialog.show();
+                    }
+                } );
             }
         };
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter( adapter );
     }
 
-    private void showCreateShipperDialog()
+    private void showEditDialog(final String key, final Parent item)
+    {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder( ParentManagement.this );
+        alertDialog.setTitle( "Edit Parent's Info" );
+        alertDialog.setIcon( R.drawable.ic_person_black_24dp );
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View edit_parent_layout = inflater.inflate( R.layout.add_new_parent_layout, null );
+
+        etName = edit_parent_layout.findViewById( R.id.etParentName );
+        etPhone = edit_parent_layout.findViewById( R.id.etParentPhone );
+        etPassword = edit_parent_layout.findViewById( R.id.etParentPassword );
+
+        etName.setText( item.getName() );
+        etPhone.setText( item.getPhone() );
+        etPassword.setText( item.getPassword() );
+
+        alertDialog.setView( edit_parent_layout );
+
+        alertDialog.setPositiveButton( "DONE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+
+                item.setName( etName.getText().toString() );
+                item.setPhone( etPhone.getText().toString() );
+                item.setPassword( etPassword.getText().toString() );
+
+                parents.child( key ).setValue( item );
+            }
+        } );
+
+        alertDialog.setNegativeButton( "CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        } );
+
+        alertDialog.show();
+
+    }
+
+    private void showCreateParentDialog()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder( ParentManagement.this );
         builder.setTitle( "Create Parent" );
@@ -87,13 +164,13 @@ public class ParentManagement extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View add_new_parent = inflater.inflate( R.layout.add_new_parent_layout, null );
 
-        etName = add_new_parent.findViewById( R.id.etShipperName );
-        etPhone = add_new_parent.findViewById( R.id.etShipperPhone );
-        etPassword = add_new_parent.findViewById( R.id.etShipperPassword );
+        etName = add_new_parent.findViewById( R.id.etParentName );
+        etPhone = add_new_parent.findViewById( R.id.etParentPhone );
+        etPassword = add_new_parent.findViewById( R.id.etParentPassword );
 
         builder.setView( add_new_parent );
 
-        builder.setPositiveButton( "CREATE", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton( "DONE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 

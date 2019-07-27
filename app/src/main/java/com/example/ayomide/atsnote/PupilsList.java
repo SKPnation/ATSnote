@@ -131,7 +131,7 @@ public class PupilsList extends AppCompatActivity {
                 viewHolder.setItemClickListener( new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-                        Toast.makeText( PupilsList.this, "Press the link for more options", Toast.LENGTH_SHORT ).show();
+                        Toast.makeText( PupilsList.this, "Long press the link for more options", Toast.LENGTH_SHORT ).show();
                     }
                 } );
 
@@ -260,7 +260,7 @@ public class PupilsList extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                Toast.makeText( PupilsList.this, "Press the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
+                Toast.makeText( PupilsList.this, "long press the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
             }
         } );
 
@@ -269,7 +269,6 @@ public class PupilsList extends AppCompatActivity {
 
     private void selectPdf() {
         //to allow user to select a file using file manager, we will use intent
-
         Intent intent = new Intent();
         intent.setType( "application/pdf" );
         intent.setAction( Intent.ACTION_GET_CONTENT );

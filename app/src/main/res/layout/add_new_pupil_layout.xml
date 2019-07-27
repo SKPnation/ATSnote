@@ -59,14 +59,13 @@
 
         <EditText
             android:id="@+id/etEntryCode"
-            android:hint="Entry code"
+            android:hint="Registration number"
             android:text=""
             android:textColorHint="@color/colorHints"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#000"
             android:textSize="16sp"
-            android:inputType="number"
             app:met_baseColor="#000"
             app:met_floatingLabel="highlight"
             app:met_primaryColor="#000"

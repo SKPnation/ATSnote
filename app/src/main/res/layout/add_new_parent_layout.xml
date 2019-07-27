@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/etShipperName"
+            android:id="@+id/etParentName"
             android:hint="Name"
             android:text=""
             android:textColorHint="@color/colorPrimary"
@@ -28,7 +28,7 @@
             app:met_singleLineEllipsis="true"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/etShipperPhone"
+            android:id="@+id/etParentPhone"
             android:hint="Phone"
             android:text=""
             android:textColorHint="@color/colorPrimary"
@@ -43,7 +43,7 @@
             app:met_singleLineEllipsis="true"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/etShipperPassword"
+            android:id="@+id/etParentPassword"
             android:hint="Password"
             android:text=""
             android:textColorHint="@color/colorPrimary"

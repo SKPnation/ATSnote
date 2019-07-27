@@ -70,7 +70,7 @@ public class ReportCard extends AppCompatActivity{
         if(!pupilId.isEmpty())
         {
             getReport(pupilId);
-            Toast.makeText( ReportCard.this, "Tap the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
+            Toast.makeText( ReportCard.this, "Tap the link above if you want to share the child's report card", Toast.LENGTH_LONG ).show();
         }
     }
 
@@ -94,7 +94,6 @@ public class ReportCard extends AppCompatActivity{
                 currentPupil = dataSnapshot.getValue(Pupil.class);
 
                 report_url.setText( currentPupil.getReportPdf() );
-                Toast.makeText( ReportCard.this, "Tap the link above if you want to share the child's report card", Toast.LENGTH_LONG ).show();
                 //This function reads pdf from URL
                 new RetrievePDFStream().execute( report_url.getText().toString() );
 

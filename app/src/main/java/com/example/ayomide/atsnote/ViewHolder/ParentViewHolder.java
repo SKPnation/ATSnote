@@ -19,6 +19,6 @@ public class ParentViewHolder extends RecyclerView.ViewHolder {
         parent_name = itemView.findViewById(R.id.parent_name);
         parent_phone = itemView.findViewById(R.id.parent_phone);
         btn_edit = itemView.findViewById( R.id.btnEdit );
-        btn_delete = itemView.findViewById( R.id.btnRemove );
+        btn_delete = itemView.findViewById( R.id.btnDelete );
     }
 }
