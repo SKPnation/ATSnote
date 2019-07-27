@@ -8,6 +8,11 @@
             android:id="@+id/nav_classes"
             android:icon="@drawable/ic_class_black_24dp"
             android:title="Classes" />
+
+        <item
+            android:id="@+id/nav_parents"
+            android:icon="@drawable/ic_people_black_24dp"
+            android:title="Parents management" />
     </group>
 
 </menu>

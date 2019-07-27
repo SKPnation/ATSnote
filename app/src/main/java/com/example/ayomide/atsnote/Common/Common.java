@@ -14,7 +14,7 @@ public class Common {
     public static final String USER_KEY = "User";
     public static final String PWD_KEY = "Password";
 
-    public static final int REQUEST_CALL = 1;
+    public static final String PARENTS_TABLE = "Parents";
 
     public static final int IMAGE_REQUEST = 71;
     public static final int PDF_REQUEST = 86;

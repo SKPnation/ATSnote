@@ -226,6 +226,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_classes) {
             // Handle the class action
+        } else if (id == R.id.nav_parents)
+        {
+            startActivity( new Intent( MainActivity.this, ParentManagement.class ) );
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_layout );
