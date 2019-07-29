@@ -77,8 +77,8 @@ public class PupilsList extends AppCompatActivity {
 
     //Add new pupil layout
     EditText etName, etAge, etGrade, etEntryCode, etHomeAddress, etPhone, etGname, etGemail, etOfficeAddress;
-    Button btnSelect, btnUpload, btnPdfSelect, btnPdfUpload;
-    TextView tvReportFile;
+    Button btnSelect, btnUpload, btnPdfSelect, btnPdfUpload, btnBillSelect, btnBillUpload;
+    TextView tvReportFile, tvBillFile;
 
     Pupil newPupil;
 
@@ -126,9 +126,11 @@ public class PupilsList extends AppCompatActivity {
                 viewHolder.pupil_name.setText( model.getName() );
                 viewHolder.pupil_age.setText( model.getAge() );
                 viewHolder.tvReportFile.setText( model.getReportPdf() );
+                viewHolder.tvBillFile.setText( model.getBillPdf() );
                 Picasso.with( getBaseContext() ).load( model.getImage() ).into( viewHolder.pupil_image );
 
                 registerForContextMenu( viewHolder.tvReportFile );
+                registerForContextMenu( viewHolder.tvBillFile );
 
                 viewHolder.btnEdit.setOnClickListener( new View.OnClickListener() {
                     @Override
@@ -141,6 +143,13 @@ public class PupilsList extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         showPdfDialog( adapter.getRef( position ).getKey(), adapter.getItem( position ) );
+                    }
+                } );
+
+                viewHolder.btnBill.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showBillUploadDialog(adapter.getRef( position ).getKey(), adapter.getItem( position ));
                     }
                 } );
 
@@ -191,6 +200,40 @@ public class PupilsList extends AppCompatActivity {
         recycler_pupils.setAdapter( adapter );
     }
 
+    private void showBillUploadDialog(String key, Pupil item)
+    {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
+        alertDialog.setTitle( "Upload School Fees" );
+        alertDialog.setIcon( R.drawable.ic_file_upload_black_24dp );
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View upload_bill_layout = inflater.inflate( R.layout.bill_upload_layout, null );
+        alertDialog.setView( upload_bill_layout );
+
+        tvBillFile = upload_bill_layout.findViewById( R.id.billLink );
+        btnBillSelect = upload_bill_layout.findViewById( R.id.btnBillSelect );
+        btnBillUpload = upload_bill_layout.findViewById( R.id.btnBillUpload );
+
+        tvBillFile.setText( item.getBillPdf() );
+
+        btnBillSelect.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //...
+            }
+        } );
+
+        alertDialog.setPositiveButton( "DONE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Toast.makeText( PupilsList.this, "long press the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
+            }
+        } );
+
+        alertDialog.show();
+    }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -204,16 +247,22 @@ public class PupilsList extends AppCompatActivity {
 
         int id = item.getItemId();
 
-        if(id == R.id.view)
+        if(id == R.id.view_report)
         {
             Intent pupilReport = new Intent(PupilsList.this, ReportCard.class);
             pupilReport.putExtra("pupilId", adapter.getRef(item.getOrder()).getKey()); //Send pupil Id to new activity
             startActivity(pupilReport);
         }
-        else if(id == R.id.delete)
+        else if(id == R.id.delete_report)
         {
             DatabaseReference pupilReport = FirebaseDatabase.getInstance().getReference("Pupil").child( adapter.getRef( item.getOrder() ).getKey() ).child( "reportPdf" );
             pupilReport.removeValue();
+        }
+        else if(id == R.id.view_bill)
+        {
+            Intent pupilReport = new Intent(PupilsList.this, BillActivity.class);
+            pupilReport.putExtra("pupilId", adapter.getRef(item.getOrder()).getKey()); //Send pupil Id to new activity
+            startActivity(pupilReport);
         }
         return super.onContextItemSelected(item);
     }

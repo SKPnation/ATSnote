@@ -28,6 +28,7 @@ public class PupilViewHolder extends RecyclerView.ViewHolder
         pupil_name = itemView.findViewById( R.id.pupil_name );
         pupil_age = itemView.findViewById( R.id.pupil_age );
         tvReportFile = itemView.findViewById( R.id.report_file );
+        tvBillFile = itemView.findViewById( R.id.bill_file );
 
         btnEdit = itemView.findViewById( R.id.btnEdit );
         btnReport = itemView.findViewById( R.id.btnReport );
