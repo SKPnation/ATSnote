@@ -1,25 +1,14 @@
 package com.example.ayomide.atsnote;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ayomide.atsnote.Common.Common;
-import com.example.ayomide.atsnote.Interface.ItemClickListener;
-import com.example.ayomide.atsnote.Interface.ItemClickListenerII;
 import com.example.ayomide.atsnote.Model.Pupil;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.google.firebase.database.DataSnapshot;

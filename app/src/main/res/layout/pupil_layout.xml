@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -54,23 +55,83 @@
                     android:layout_below="@+id/pupil_name"
                     android:layout_marginLeft="30dp"
                     />
-                <TextView
-                    android:id="@+id/report_file"
-                    android:layout_below="@+id/pupil_age"
+
+                <LinearLayout
+                    android:id="@+id/reportlk"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_toRightOf="@id/pupil_image"
-                    android:text="Report has not been uploaded"
-                    android:textColor="@android:color/black"
-                    android:textSize="9sp" />
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/pupil_age">
+
+                    <TextView
+                        android:id="@+id/report_tag"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_toRightOf="@id/pupil_image"
+                        android:text="Report:"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/report_file"
+                        android:padding="4dp"
+                        android:layout_below="@+id/pupil_age"
+                        android:background="#aaa"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="150dp"
+                        android:layout_height="30dp"
+                        android:layout_toRightOf="@id/pupil_image"
+                        android:text=""
+                        android:textColor="@android:color/white"
+                        android:textSize="11sp"
+                        android:singleLine="true" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/reportlk"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:id="@+id/bill_tag"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_toRightOf="@id/pupil_image"
+                        android:text="Bill:"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/bill_file"
+                        android:layout_below="@+id/pupil_age"
+                        android:padding="4dp"
+                        android:background="#000"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="150dp"
+                        android:layout_height="30dp"
+                        android:layout_toRightOf="@id/pupil_image"
+                        android:text="                          "
+                        android:textColor="@android:color/white"
+                        android:textSize="11sp"
+                        android:singleLine="true"/>
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
-            android:weightSum="3"
+            android:weightSum="4"
             android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="30dp">
@@ -80,7 +141,7 @@
                 android:layout_weight="1"
                 android:text="EDIT"
                 android:textSize="11sp"
-                android:background="#fff"
+                android:background="#ECF0F1"
                 android:gravity="center"
                 android:textColor="@color/colorAccent"
                 android:textStyle="bold"
@@ -89,7 +150,7 @@
 
             <Button
                 android:id="@+id/btnReport"
-                android:background="#fff"
+                android:background="#ECF0F1"
                 android:layout_weight="1"
                 android:text="REPORT"
                 android:textSize="11sp"
@@ -100,9 +161,21 @@
                 android:layout_height="wrap_content" />
 
             <Button
+                android:id="@+id/btnBill"
+                android:background="#ECF0F1"
+                android:layout_weight="1"
+                android:text="BILL"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <Button
                 android:id="@+id/btnRemove"
                 android:layout_weight="1"
-                android:background="#fff"
+                android:background="#ECF0F1"
                 android:text="DELETE"
                 android:textSize="11sp"
                 android:textColor="@color/colorAccent"

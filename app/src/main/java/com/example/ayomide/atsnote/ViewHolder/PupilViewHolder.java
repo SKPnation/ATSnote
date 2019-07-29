@@ -18,7 +18,7 @@ public class PupilViewHolder extends RecyclerView.ViewHolder implements View.OnC
 {
     public CircleImageView pupil_image;
     public TextView pupil_name, pupil_age, tvReportFile;
-    public Button btnEdit, btnReport, btnRemove;
+    public Button btnEdit, btnReport, btnBill, btnRemove;
 
     private ItemClickListener itemClickListener;
 
