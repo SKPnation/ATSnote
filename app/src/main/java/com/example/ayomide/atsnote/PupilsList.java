@@ -128,12 +128,7 @@ public class PupilsList extends AppCompatActivity {
                 viewHolder.tvReportFile.setText( model.getReportPdf() );
                 Picasso.with( getBaseContext() ).load( model.getImage() ).into( viewHolder.pupil_image );
 
-                viewHolder.setItemClickListener( new ItemClickListener() {
-                    @Override
-                    public void onClick(View view, int position, boolean isLongClick) {
-                        Toast.makeText( PupilsList.this, "Long press the link for more options", Toast.LENGTH_SHORT ).show();
-                    }
-                } );
+                registerForContextMenu( viewHolder.tvReportFile );
 
                 viewHolder.btnEdit.setOnClickListener( new View.OnClickListener() {
                     @Override
@@ -198,22 +193,24 @@ public class PupilsList extends AppCompatActivity {
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu( menu, v, menuInfo );
+
         getMenuInflater().inflate( R.menu.context_menu_sort, menu );
-        return true;
     }
 
     @Override
-    public boolean onContextItemSelected(final MenuItem item) {
+    public boolean onContextItemSelected(MenuItem item) {
 
-        if(item.getTitle().equals(Common.VIEW))
+        int id = item.getItemId();
+
+        if(id == R.id.view)
         {
             Intent pupilReport = new Intent(PupilsList.this, ReportCard.class);
             pupilReport.putExtra("pupilId", adapter.getRef(item.getOrder()).getKey()); //Send pupil Id to new activity
             startActivity(pupilReport);
         }
-        else if(item.getTitle().equals(Common.DELETE))
+        else if(id == R.id.delete)
         {
             DatabaseReference pupilReport = FirebaseDatabase.getInstance().getReference("Pupil").child( adapter.getRef( item.getOrder() ).getKey() ).child( "reportPdf" );
             pupilReport.removeValue();
