@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ayomide.atsnote.Common.Common;
 import com.example.ayomide.atsnote.Model.Pupil;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.google.firebase.database.DataSnapshot;
@@ -33,7 +34,6 @@ public class ReportCard extends AppCompatActivity{
     Pupil currentPupil;
 
     TextView report_url;
-    PDFView pdfView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class ReportCard extends AppCompatActivity{
             }
         } );
 
-        pdfView = findViewById( R.id.pdfView );
+        Common.pdfView = findViewById( R.id.pdfView );
 
         //Get pupil Id from Intent
         if(getIntent() != null)
@@ -96,29 +96,5 @@ public class ReportCard extends AppCompatActivity{
     }
 
 
-    class RetrievePDFStream extends AsyncTask<String,Void,InputStream>
-    {
-        @Override
-        protected InputStream doInBackground(String... strings) {
-            InputStream inputStream = null;
-            try{
-                URL url = new URL( strings[0] );
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                if (urlConnection.getResponseCode()==200)
-                {
-                    inputStream = new BufferedInputStream( urlConnection.getInputStream() );
-                }
-            }
-            catch (IOException e)
-            {
-                return null;
-            }
-            return inputStream;
-        }
 
-        @Override
-        protected void onPostExecute(InputStream inputStream) {
-            pdfView.fromStream( inputStream ).load();
-        }
-    }
 }

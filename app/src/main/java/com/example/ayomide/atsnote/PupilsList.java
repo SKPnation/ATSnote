@@ -82,7 +82,7 @@ public class PupilsList extends AppCompatActivity {
 
     Pupil newPupil;
 
-    Uri saveUri, pdfUri;
+    Uri saveUri, pdfUri, billUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +200,7 @@ public class PupilsList extends AppCompatActivity {
         recycler_pupils.setAdapter( adapter );
     }
 
-    private void showBillUploadDialog(String key, Pupil item)
+    private void showBillUploadDialog(final String key, final Pupil item)
     {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder( PupilsList.this );
         alertDialog.setTitle( "Upload School Fees" );
@@ -219,7 +219,14 @@ public class PupilsList extends AppCompatActivity {
         btnBillSelect.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //...
+                selectBill();
+            }
+        } );
+
+        btnBillUpload.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               uploadBill(key, item);
             }
         } );
 
@@ -227,11 +234,77 @@ public class PupilsList extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                Toast.makeText( PupilsList.this, "long press the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
+
+                Toast.makeText( PupilsList.this, "long press the link in the pupil item to view link in full", Toast.LENGTH_LONG ).show();
             }
         } );
 
         alertDialog.show();
+    }
+
+    private void uploadBill(final String key, final Pupil item)
+    {
+        if (billUri != null)
+        {
+            final ProgressDialog progressDialog = new ProgressDialog( PupilsList.this );
+            progressDialog.setProgressStyle( ProgressDialog.STYLE_HORIZONTAL );
+            progressDialog.setTitle( "Uploading file..." );
+            progressDialog.setProgress( 0 );
+            progressDialog.show();
+
+            final String billName = key;
+            StorageReference billFolder = storageReference.child( "billFiles/"+billName );
+            billFolder.putFile( billUri ).addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener( new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            final String billUrl = uri.toString();
+                            DatabaseReference reference = pupilsList;
+                            reference.child( key ).child( billName ).setValue( billUrl ).addOnCompleteListener( new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful())
+                                    {
+                                        progressDialog.dismiss();
+                                        Toast.makeText( PupilsList.this, "File successfully uploaded", Toast.LENGTH_SHORT ).show();
+                                        item.setBillPdf( billUrl );
+
+                                        pupilsList.child( key ).setValue( item );
+                                    }
+                                    else
+                                        {
+                                            Toast.makeText( PupilsList.this, "File not successfully uploaded", Toast.LENGTH_SHORT ).show();
+                                        }
+                                }
+                            } );
+                        }
+                    } );
+                }
+            } ).addOnFailureListener( new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+                    Toast.makeText( PupilsList.this, "File not successfully uploaded", Toast.LENGTH_SHORT ).show();
+                }
+            } ).addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    progressDialog.setProgress( currentProgress );
+                }
+            } );
+        }
+    }
+
+
+    private void selectBill() {
+        //to allow user to select a file using file manager, we will use intent
+        Intent intent = new Intent();
+        intent.setType( "application/pdf" );
+        intent.setAction( Intent.ACTION_GET_CONTENT );
+        startActivityForResult( intent, Common.BILL_REQUEST );
     }
 
 
@@ -260,9 +333,14 @@ public class PupilsList extends AppCompatActivity {
         }
         else if(id == R.id.view_bill)
         {
-            Intent pupilReport = new Intent(PupilsList.this, BillActivity.class);
-            pupilReport.putExtra("pupilId", adapter.getRef(item.getOrder()).getKey()); //Send pupil Id to new activity
-            startActivity(pupilReport);
+            Intent pupilBill = new Intent(PupilsList.this, BillActivity.class);
+            pupilBill.putExtra("pupilId", adapter.getRef(item.getOrder()).getKey()); //Send pupil Id to new activity
+            startActivity(pupilBill);
+        }
+        else if(id == R.id.delete_bill)
+        {
+            DatabaseReference pupilReport = FirebaseDatabase.getInstance().getReference("Pupil").child( adapter.getRef( item.getOrder() ).getKey() ).child( "billPdf" );
+            pupilReport.removeValue();
         }
         return super.onContextItemSelected(item);
     }
@@ -306,7 +384,7 @@ public class PupilsList extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                Toast.makeText( PupilsList.this, "long press the link in the pupil item to view report card in full", Toast.LENGTH_LONG ).show();
+                Toast.makeText( PupilsList.this, "long press the link in the pupil item to view link in full", Toast.LENGTH_LONG ).show();
             }
         } );
 
@@ -379,7 +457,8 @@ public class PupilsList extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 9 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             selectPdf();
-        } else
+        }
+        else
             Toast.makeText( PupilsList.this, "Please provide permission..", Toast.LENGTH_SHORT ).show();
     }
 
@@ -628,6 +707,11 @@ public class PupilsList extends AppCompatActivity {
         if (requestCode == Common.PDF_REQUEST && resultCode == RESULT_OK && data != null) {
             pdfUri = data.getData(); //return the uri of the selected file
             tvReportFile.setText( "the report file link : " + data.getData().getLastPathSegment() );
+        }
+
+        if (requestCode == Common.BILL_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            billUri = data.getData(); //return the uri of the selected file
+            tvBillFile.setText( "the bill file link : " + data.getData().getLastPathSegment() );
         }
     }
 }
