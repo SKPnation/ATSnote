@@ -129,9 +129,6 @@ public class PupilsList extends AppCompatActivity {
                 viewHolder.tvBillFile.setText( model.getBillPdf() );
                 Picasso.with( getBaseContext() ).load( model.getImage() ).into( viewHolder.pupil_image );
 
-                registerForContextMenu( viewHolder.tvReportFile );
-                registerForContextMenu( viewHolder.tvBillFile );
-
                 viewHolder.btnEdit.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -309,35 +306,27 @@ public class PupilsList extends AppCompatActivity {
 
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu( menu, v, menuInfo );
-
-        getMenuInflater().inflate( R.menu.context_menu_sort, menu );
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if(id == R.id.view_report)
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        if(item.getTitle().equals( Common.VIEW_REPORT ))
         {
             Intent pupilReport = new Intent(PupilsList.this, ReportCard.class);
             pupilReport.putExtra("pupilId", adapter.getRef(item.getOrder()).getKey()); //Send pupil Id to new activity
             startActivity(pupilReport);
         }
-        else if(id == R.id.delete_report)
-        {
-            DatabaseReference pupilReport = FirebaseDatabase.getInstance().getReference("Pupil").child( adapter.getRef( item.getOrder() ).getKey() ).child( "reportPdf" );
-            pupilReport.removeValue();
-        }
-        else if(id == R.id.view_bill)
+        else if(item.getTitle().equals(Common.VIEW_BILL))
         {
             Intent pupilBill = new Intent(PupilsList.this, BillActivity.class);
             pupilBill.putExtra("pupilId", adapter.getRef(item.getOrder()).getKey()); //Send pupil Id to new activity
             startActivity(pupilBill);
         }
-        else if(id == R.id.delete_bill)
+        else if(item.getTitle().equals(Common.DELETE_REPORT))
+        {
+            DatabaseReference pupilReport = FirebaseDatabase.getInstance().getReference("Pupil").child( adapter.getRef( item.getOrder() ).getKey() ).child( "reportPdf" );
+            pupilReport.removeValue();
+
+        }
+        else if(item.getTitle().equals(Common.DELETE_BILL))
         {
             DatabaseReference pupilReport = FirebaseDatabase.getInstance().getReference("Pupil").child( adapter.getRef( item.getOrder() ).getKey() ).child( "billPdf" );
             pupilReport.removeValue();

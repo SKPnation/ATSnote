@@ -1,6 +1,7 @@
 package com.example.ayomide.atsnote;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class BillActivity extends AppCompatActivity {
 
     FirebaseDatabase db;
@@ -25,6 +32,8 @@ public class BillActivity extends AppCompatActivity {
     String pupilId = "";
 
     Pupil currentPupil;
+
+    PDFView billView;
 
     TextView bill_url;
 
@@ -44,7 +53,7 @@ public class BillActivity extends AppCompatActivity {
             }
         } );
 
-        Common.billView = findViewById( R.id.bill_pdf);
+        billView = findViewById( R.id.bill_pdf);
 
         //Get pupil Id from Intent
         if(getIntent() != null)
@@ -88,5 +97,30 @@ public class BillActivity extends AppCompatActivity {
         } );
     }
 
+
+    public class RetrieveBILLPDFStream extends AsyncTask<String,Void,InputStream> {
+        @Override
+        protected InputStream doInBackground(String... strings) {
+            InputStream inputStream = null;
+            try{
+                URL url = new URL( strings[0] );
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                if (urlConnection.getResponseCode()==200)
+                {
+                    inputStream = new BufferedInputStream( urlConnection.getInputStream() );
+                }
+            }
+            catch (IOException e)
+            {
+                return null;
+            }
+            return inputStream;
+        }
+
+        @Override
+        protected void onPostExecute(InputStream inputStream) {
+            billView.fromStream( inputStream ).load();
+        }
+    }
 
 }

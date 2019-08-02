@@ -10,9 +10,6 @@ import com.github.barteksc.pdfviewer.PDFView;
 
 public class Common {
     public static User currentUser;
-    public static Pupil currentPupil;
-    public static PDFView pdfView;
-    public static PDFView billView;
 
     public static final String USER_KEY = "User";
     public static final String PWD_KEY = "Password";
@@ -26,6 +23,10 @@ public class Common {
     public static final String EDIT = "Edit";
     public static final String DELETE = "Delete";
     public static final String VIEW = "View";
+    public static final String VIEW_REPORT = "View Report";
+    public static final String VIEW_BILL = "View Bill";
+    public static final String DELETE_REPORT = "Delete Report";
+    public static final String DELETE_BILL = "Delete Bill";
 
     public static final String SHARE = "Share";
 

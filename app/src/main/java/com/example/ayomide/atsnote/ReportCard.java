@@ -33,6 +33,8 @@ public class ReportCard extends AppCompatActivity{
 
     Pupil currentPupil;
 
+    PDFView pdfView;
+
     TextView report_url;
 
     @Override
@@ -51,15 +53,18 @@ public class ReportCard extends AppCompatActivity{
             }
         } );
 
-        Common.pdfView = findViewById( R.id.pdfView );
+        pdfView = findViewById( R.id.pdfView );
 
         //Get pupil Id from Intent
         if(getIntent() != null)
             pupilId = getIntent().getStringExtra("pupilId");
         if(!pupilId.isEmpty())
         {
-            getReport(pupilId);
-            Toast.makeText( ReportCard.this, "Tap the link above if you want to share the child's report card", Toast.LENGTH_LONG ).show();
+            if (Common.isConnectedToTheInternet(getBaseContext()))
+            {
+                getReport( pupilId );
+                Toast.makeText( ReportCard.this, "Tap the link above if you want to share the child's report card", Toast.LENGTH_LONG ).show();
+            }
         }
     }
 
@@ -96,5 +101,28 @@ public class ReportCard extends AppCompatActivity{
     }
 
 
+    class RetrievePDFStream extends AsyncTask<String,Void,InputStream> {
+        @Override
+        protected InputStream doInBackground(String... strings) {
+            InputStream inputStream = null;
+            try{
+                URL url = new URL( strings[0] );
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                if (urlConnection.getResponseCode()==200)
+                {
+                    inputStream = new BufferedInputStream( urlConnection.getInputStream() );
+                }
+            }
+            catch (IOException e)
+            {
+                return null;
+            }
+            return inputStream;
+        }
 
+        @Override
+        protected void onPostExecute(InputStream inputStream) {
+            pdfView.fromStream( inputStream ).load();
+        }
+    }
 }
