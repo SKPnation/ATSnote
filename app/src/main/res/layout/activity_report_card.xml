@@ -11,8 +11,9 @@
             android:id="@+id/repor_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:text="report url" />
+            android:textSize="20sp"
+            android:text="report url"
+            android:textStyle="bold"/>
 
         <com.github.barteksc.pdfviewer.PDFView
             android:id="@+id/pdfView"

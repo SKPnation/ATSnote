@@ -41,6 +41,13 @@ public class PupilViewHolder extends RecyclerView.ViewHolder
                 Toast.makeText( view.getContext(), "Long press the link for more options", Toast.LENGTH_SHORT ).show();
             }
         } );
+
+        tvBillFile.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText( view.getContext(), "Long press the link for more options", Toast.LENGTH_SHORT ).show();
+            }
+        } );
     }
 
 }

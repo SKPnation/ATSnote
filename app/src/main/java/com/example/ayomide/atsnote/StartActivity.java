@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.ayomide.atsnote.Common.Common;
@@ -26,7 +27,7 @@ public class StartActivity extends AppCompatActivity {
 
     DatabaseReference table_user;
 
-    ImageButton enter;
+    RelativeLayout enter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

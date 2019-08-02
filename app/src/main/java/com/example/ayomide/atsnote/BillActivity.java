@@ -1,5 +1,6 @@
 package com.example.ayomide.atsnote;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ public class BillActivity extends AppCompatActivity {
         bill_url.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //...
+                sendEmail();
             }
         } );
 
@@ -51,8 +52,20 @@ public class BillActivity extends AppCompatActivity {
         if(!pupilId.isEmpty())
         {
             getBill(pupilId);
-            Toast.makeText( BillActivity.this, "Tap the link above if you want to share the child's report card", Toast.LENGTH_LONG ).show();
+            Toast.makeText( BillActivity.this, "Tap the link above if you want to share the child's school fees", Toast.LENGTH_LONG ).show();
         }
+    }
+
+    private void sendEmail()
+    {
+        String subject = currentPupil.getName()+"'s school fees";
+        String text = currentPupil.getReportPdf();
+        Intent intent = new Intent();
+        intent.setType( "message/rfc2822" ); //message/rfc2822 is a mime type for email messages
+        intent.setAction(  Intent.ACTION_SEND  );
+        intent.putExtra( Intent.EXTRA_SUBJECT, subject );
+        intent.putExtra( Intent.EXTRA_TEXT, text );
+        startActivity(Intent.createChooser(intent, "Share using"));
     }
 
     private void getBill(String pupilId)

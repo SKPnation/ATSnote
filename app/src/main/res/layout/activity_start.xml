@@ -6,26 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
+    android:id="@+id/enter"
     tools:context=".StartActivity">
 
     <ImageView
         android:id="@+id/ATSlogo"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_centerInParent="true"
         android:src="@drawable/adorable_logo" />
-
-    <ImageButton
-        android:id="@+id/enter"
-        android:src="@drawable/ic_arrow_forward_black_24dp"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="40dp"
-        android:tint="@color/colorPrimaryDark"
-        android:background="#fff"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-
 </RelativeLayout>

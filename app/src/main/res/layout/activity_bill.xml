@@ -11,8 +11,9 @@
         android:id="@+id/bill_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="10sp"
-        android:text="bill url" />
+        android:textSize="20sp"
+        android:text="bill url"
+        android:textStyle="bold"/>
 
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/bill_pdf"
