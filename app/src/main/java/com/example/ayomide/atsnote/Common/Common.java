@@ -22,13 +22,10 @@ public class Common {
 
     public static final String EDIT = "Edit";
     public static final String DELETE = "Delete";
-    public static final String VIEW = "View";
     public static final String VIEW_REPORT = "View Report";
     public static final String VIEW_BILL = "View Bill";
     public static final String DELETE_REPORT = "Delete Report";
     public static final String DELETE_BILL = "Delete Bill";
-
-    public static final String SHARE = "Share";
 
     public static boolean isConnectedToTheInternet(Context context)
     {

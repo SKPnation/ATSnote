@@ -60,8 +60,11 @@ public class BillActivity extends AppCompatActivity {
             pupilId = getIntent().getStringExtra("pupilId");
         if(!pupilId.isEmpty())
         {
-            getBill(pupilId);
-            Toast.makeText( BillActivity.this, "Tap the link above if you want to share the child's school fees", Toast.LENGTH_LONG ).show();
+            if (Common.isConnectedToTheInternet( getBaseContext() ))
+            {
+                getBill(pupilId);
+                Toast.makeText( BillActivity.this, "Tap the link above if you want to share the child's school fees", Toast.LENGTH_LONG ).show();
+            }
         }
     }
 
